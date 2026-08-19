@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import { useShareStore } from '../../stores/use-share-store';
 import { BleDeviceCard } from '../../components/ble-device-card';

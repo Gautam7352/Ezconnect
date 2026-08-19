@@ -4,7 +4,7 @@ export type SmartLinkSuggestion = {
   conversationId: string;
   contactId: string;
   contactName: string;
-  confidence: number; // 0.0–1.0
+  confidence: number; // 0.0Ã¢â‚¬â€œ1.0
   reasons: string[];
 };
 

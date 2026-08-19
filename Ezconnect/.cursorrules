@@ -1,0 +1,16 @@
+# Ezconnect - Cursor AI Rules
+
+You are working on the Ezconnect codebase (Expo SDK 57, React 19, React Native 0.86).
+
+Before generating or editing any code, you must read and adhere to:
+1. `ai/guardrails.md` - Strict project guardrails and forbidden patterns.
+2. `ai/architecture.md` - Directory layout and component mapping.
+3. `ai/expo-v57-guide.md` - Expo SDK 57 specific APIs and modern patterns.
+4. `ai/coding-standards.md` - TypeScript, React 19, and Reanimated 4 standards.
+5. `ai/documentation-maintenance.md` - Mandatory rule to update `ai/` documentation synchronously whenever code structure changes.
+
+Key rules:
+- Always use `npx expo install <package>` for dependencies.
+- Never use raw HTML tags (`<div>`, `<span>`, `<a>`, `<p>`) in native/shared files.
+- Always use `ThemedText` and `ThemedView` with tokens from `@/constants/theme`.
+- Support iOS, Android, and Web with clean platform separation (`.web.tsx` vs `.tsx`).

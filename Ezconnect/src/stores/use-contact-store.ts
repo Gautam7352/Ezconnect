@@ -1,28 +1,15 @@
 import { create } from 'zustand';
 import { db } from '@/db';
 import { sql } from 'drizzle-orm';
-import { contacts, conversations } from '@/db/schema'; // Assuming schema exists
+import { contacts, conversations, contactConversations } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-
-interface Contact {
-  id: string;
-  name: string;
-  phone: string;
-  [key: string]: any;
-}
-
-interface Conversation {
-  id: string;
-  text: string;
-  date: string;
-  [key: string]: any;
-}
+import type { ContactRow, ConversationRow } from '@/types/domain';
 
 interface ContactStore {
-  contacts: Contact[];
+  contacts: ContactRow[];
   searchQuery: string;
-  activeContact: Contact | null;
-  conversations: Conversation[];
+  activeContact: ContactRow | null;
+  conversations: ConversationRow[];
   setSearchQuery: (query: string) => void;
   searchContacts: (query: string) => Promise<void>;
   loadContact: (id: string) => Promise<void>;
@@ -45,12 +32,12 @@ export const useContactStore = create<ContactStore>((set) => ({
       if (!query.trim()) {
         results = await db.select().from(contacts).limit(50);
       } else {
-        // SQLite FTS5 query
-        results = await db.all(sql`SELECT * FROM contacts_fts WHERE contacts_fts MATCH ${query} ORDER BY rank LIMIT 50`);
-        // If FTS virtual table not available in typed db, standard drizzle:
-        // results = await db.select().from(contacts).where(sql`contacts MATCH ${query}`);
+        // SQLite FTS5 query using raw SQL mapped back to drizzle table
+        results = await db.select().from(contacts).where(
+          sql`${contacts}.rowid IN (SELECT rowid FROM contacts_fts WHERE contacts_fts MATCH ${query} ORDER BY rank LIMIT 50)`
+        );
       }
-      set({ contacts: results as Contact[] });
+      set({ contacts: results });
     } catch (e) {
       console.error('Failed to search contacts:', e);
     }
@@ -58,8 +45,8 @@ export const useContactStore = create<ContactStore>((set) => ({
 
   loadContact: async (id: string) => {
     try {
-      const result = await db.select().from(contacts).where(eq(contacts.id, id)).get();
-      set({ activeContact: result as Contact | null });
+      const result = await db.select().from(contacts).where(eq(contacts.id, id));
+      set({ activeContact: result.length > 0 ? result[0] : null });
     } catch (e) {
       console.error('Failed to load contact:', e);
     }
@@ -67,8 +54,13 @@ export const useContactStore = create<ContactStore>((set) => ({
 
   loadConversations: async (contactId: string) => {
     try {
-      const results = await db.select().from(conversations).where(eq(conversations.contactId, contactId));
-      set({ conversations: results as Conversation[] });
+      const results = await db
+        .select({ conversation: conversations })
+        .from(conversations)
+        .innerJoin(contactConversations, eq(conversations.id, contactConversations.conversationId))
+        .where(eq(contactConversations.contactId, contactId));
+      
+      set({ conversations: results.map((r) => r.conversation) });
     } catch (e) {
       console.error('Failed to load conversations:', e);
     }

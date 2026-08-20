@@ -25,13 +25,13 @@ describe('RecordScreen', () => {
     });
   });
 
-  it('renders correctly in idle state', () => {
-    const { getByText } = render(<RecordScreen />);
+  it('renders correctly in idle state', async () => {
+    const { getByText } = await render(<RecordScreen />);
     expect(getByText('Start Recording')).toBeTruthy();
   });
 
   it('calls startRecording when pressed in idle state', async () => {
-    const { getByTestId } = render(<RecordScreen />);
+    const { getByTestId } = await render(<RecordScreen />);
     
     await act(async () => {
       fireEvent.press(getByTestId('record-button'));
@@ -47,7 +47,7 @@ describe('RecordScreen', () => {
       stopRecording: mockStopRecording,
     });
 
-    const { getByTestId, getByText } = render(<RecordScreen />);
+    const { getByTestId, getByText } = await render(<RecordScreen />);
     
     expect(getByText('Stop Recording')).toBeTruthy();
 

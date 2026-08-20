@@ -22,15 +22,15 @@ describe('PersonaCard', () => {
     customLinks: null,
   };
 
-  it('renders persona details correctly', () => {
-    const { getByText } = render(<PersonaCard persona={mockPersona} />);
+  it('renders persona details correctly', async () => {
+    const { getByText } = await render(<PersonaCard persona={mockPersona} />);
     expect(getByText('Jane Doe')).toBeTruthy();
     expect(getByText('Senior Developer @ Acme')).toBeTruthy();
   });
 
-  it('triggers onPress when pressed', () => {
+  it('triggers onPress when pressed', async () => {
     const onPressMock = jest.fn();
-    const { getByTestId } = render(<PersonaCard persona={mockPersona} onPress={onPressMock} />);
+    const { getByTestId } = await render(<PersonaCard persona={mockPersona} onPress={onPressMock} />);
     
     fireEvent.press(getByTestId('persona-card'));
     expect(onPressMock).toHaveBeenCalledWith('p1');

@@ -11,16 +11,16 @@ jest.mock('react-native-qrcode-svg', () => {
 });
 
 describe('QrDisplay', () => {
-  it('renders correctly with given value', () => {
-    const { getByTestId } = render(<QrDisplay value="test-data" />);
+  it('renders correctly with given value', async () => {
+    const { getByTestId } = await render(<QrDisplay value="test-data" />);
     expect(getByTestId('qr-display')).toBeTruthy();
     const qrCode = getByTestId('mock-qrcode');
     expect(qrCode.props.value).toBe('test-data');
     expect(qrCode.props.size).toBe(200);
   });
 
-  it('respects custom size', () => {
-    const { getByTestId } = render(<QrDisplay value="test-data" size={300} />);
+  it('respects custom size', async () => {
+    const { getByTestId } = await render(<QrDisplay value="test-data" size={300} />);
     const qrCode = getByTestId('mock-qrcode');
     expect(qrCode.props.size).toBe(300);
   });

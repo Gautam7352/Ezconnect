@@ -3,9 +3,7 @@ import { useRecordingStore } from '@/stores/use-recording-store';
 import { RecordingIndicator } from '@/components/recording-indicator';
 
 export default function RecordScreen() {
-  const { status, startRecording, stopRecording } = useRecordingStore();
-
-  const isRecording = status === 'recording';
+  const { isRecording, startRecording, stopRecording, recordingDuration } = useRecordingStore();
 
   const handlePress = async () => {
     if (isRecording) {
@@ -19,7 +17,7 @@ export default function RecordScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Record Conversation</Text>
       
-      {isRecording && <RecordingIndicator />}
+      {isRecording && <RecordingIndicator isRecording={isRecording} duration={recordingDuration} />}
 
       <Pressable 
         testID="record-button"

@@ -19,6 +19,7 @@ jest.mock('@/db', () => {
     where: jest.fn().mockResolvedValue({}),
     delete: jest.fn().mockReturnThis(),
   };
+  (mockDb.select().from as any) = jest.fn().mockReturnThis();
   return { db: mockDb };
 });
 
@@ -42,7 +43,7 @@ describe('usePersonaStore', () => {
 
   it('should load personas and set active persona', async () => {
     // Mock the DB returning one active persona
-    (db.orderBy as jest.Mock).mockResolvedValueOnce([
+    ((db as any).orderBy as jest.Mock).mockResolvedValueOnce([
       {
         id: 'p1',
         displayName: 'Test User',
@@ -62,7 +63,7 @@ describe('usePersonaStore', () => {
   });
 
   it('should create a new persona and reload', async () => {
-    (db.orderBy as jest.Mock).mockResolvedValueOnce([]); // loadPersonas mock after insert
+    ((db as any).orderBy as jest.Mock).mockResolvedValueOnce([]); // loadPersonas mock after insert
 
     const newPersona = {
       displayName: 'New Profile',

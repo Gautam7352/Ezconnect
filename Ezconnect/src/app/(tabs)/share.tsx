@@ -3,6 +3,8 @@ import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import { useShareStore } from '../../stores/use-share-store';
 import { BleDeviceCard } from '../../components/ble-device-card';
 import { QrDisplay } from '../../components/qr-display';
+import { usePersonaStore } from '../../stores/use-persona-store';
+import { buildVCard } from '../../types/domain';
 
 export default function ShareScreen() {
   const { 
@@ -23,12 +25,19 @@ export default function ShareScreen() {
     };
   }, []);
 
+  const { activePersona } = usePersonaStore();
+  
+  const generateVCard = () => {
+    if (!activePersona) return 'ezconnect:fallback';
+    return buildVCard(activePersona);
+  };
+
   return (
     <View style={styles.container} testID="share-screen">
       <Text style={styles.title}>Share Profile</Text>
       
       <View style={styles.qrSection}>
-        <QrDisplay value="profile-data-placeholder" />
+        <QrDisplay value={generateVCard()} />
       </View>
 
       <View style={styles.controls}>
@@ -39,7 +48,7 @@ export default function ShareScreen() {
         />
         <Button 
           title={isAdvertising ? "Stop Advertising" : "Start Advertising"} 
-          onPress={isAdvertising ? stopAdvertising : startAdvertising} 
+          onPress={isAdvertising ? stopAdvertising : () => startAdvertising(generateVCard())} 
           testID="advertise-button"
         />
       </View>

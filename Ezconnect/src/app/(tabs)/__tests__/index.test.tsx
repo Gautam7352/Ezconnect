@@ -10,7 +10,7 @@ jest.mock('@/stores/use-persona-store', () => {
 });
 
 describe('HomeScreen', () => {
-  it('renders the active persona and quick actions', () => {
+  it('renders the active persona and quick actions', async () => {
     (usePersonaStore as unknown as jest.Mock).mockReturnValue({
       activePersona: {
         id: 'p1',
@@ -19,7 +19,7 @@ describe('HomeScreen', () => {
       },
     });
 
-    const { getByText, getByTestId } = render(<HomeScreen />);
+    const { getByText, getByTestId } = await render(<HomeScreen />);
     
     expect(getByText('Gautam Kumar')).toBeTruthy();
     expect(getByText('Android Engineer')).toBeTruthy();
@@ -27,12 +27,12 @@ describe('HomeScreen', () => {
     expect(getByTestId('quick-action-record')).toBeTruthy();
   });
 
-  it('renders an empty state when no active persona exists', () => {
+  it('renders an empty state when no active persona exists', async () => {
     (usePersonaStore as unknown as jest.Mock).mockReturnValue({
       activePersona: null,
     });
 
-    const { getByText } = render(<HomeScreen />);
+    const { getByText } = await render(<HomeScreen />);
     expect(getByText('No active profile')).toBeTruthy();
     expect(getByText('Create your first persona to get started.')).toBeTruthy();
   });

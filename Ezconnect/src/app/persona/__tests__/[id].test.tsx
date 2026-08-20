@@ -34,7 +34,7 @@ describe('PersonaEditorScreen', () => {
   it('renders correctly for creating a new persona', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ id: 'new' });
     
-    const { getByPlaceholderText, getByText } = render(<PersonaScreen />);
+    const { getByPlaceholderText, getByText } = await render(<PersonaScreen />);
     
     expect(getByText('Create Persona')).toBeTruthy();
     const nameInput = getByPlaceholderText('Full Name');
@@ -59,7 +59,7 @@ describe('PersonaEditorScreen', () => {
   it('renders correctly for editing an existing persona', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({ id: 'p1' });
     
-    const { getByDisplayValue, getByText } = render(<PersonaScreen />);
+    const { getByDisplayValue, getByText } = await render(<PersonaScreen />);
     
     expect(getByText('Edit Persona')).toBeTruthy();
     expect(getByDisplayValue('Jane Doe')).toBeTruthy();

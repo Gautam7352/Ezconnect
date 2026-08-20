@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { startAudioRecording, stopAudioRecording } from '@/services/audio-recorder';
 
 interface RecordingState {
   isRecording: boolean;
@@ -13,11 +14,13 @@ export const useRecordingStore = create<RecordingState>((set) => ({
   recordingDuration: 0,
   transcription: null,
   startRecording: async () => {
-    // Dummy implementation for tests
+    await startAudioRecording((text) => {
+      set({ transcription: text });
+    });
     set({ isRecording: true });
   },
   stopRecording: async () => {
-    // Dummy implementation for tests
-    set({ isRecording: false });
+    const { transcription } = await stopAudioRecording();
+    set({ isRecording: false, transcription });
   },
 }));

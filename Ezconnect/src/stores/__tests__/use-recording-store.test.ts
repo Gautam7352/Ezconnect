@@ -19,15 +19,15 @@ jest.mock('whisper.rn', () => ({
 }));
 
 describe('useRecordingStore', () => {
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useRecordingStore());
+  it('initializes with default state', async () => {
+    const { result } = await renderHook(() => useRecordingStore());
     expect(result.current.isRecording).toBe(false);
     expect(result.current.recordingDuration).toBe(0);
     expect(result.current.transcription).toBe(null);
   });
 
   it('starts recording and updates state', async () => {
-    const { result } = renderHook(() => useRecordingStore());
+    const { result } = await renderHook(() => useRecordingStore());
     await act(async () => {
       await result.current.startRecording();
     });
@@ -35,7 +35,7 @@ describe('useRecordingStore', () => {
   });
 
   it('stops recording and updates state', async () => {
-    const { result } = renderHook(() => useRecordingStore());
+    const { result } = await renderHook(() => useRecordingStore());
     await act(async () => {
       await result.current.startRecording();
     });

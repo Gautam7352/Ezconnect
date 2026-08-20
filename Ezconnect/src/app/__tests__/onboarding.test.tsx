@@ -3,17 +3,17 @@ import { render, fireEvent, act } from '@testing-library/react-native';
 import OnboardingScreen from '../onboarding';
 import { useRouter } from 'expo-router';
 import { usePermissionsStore } from '@/stores/use-permissions-store';
-import { storage } from '@/db';
+import { createMMKV } from 'react-native-mmkv';
 
 // Mock dependencies
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('@/db', () => ({
-  storage: {
+jest.mock('react-native-mmkv', () => ({
+  createMMKV: jest.fn(() => ({
     set: jest.fn(),
-  },
+  })),
 }));
 
 jest.mock('@/stores/use-permissions-store', () => {
@@ -35,14 +35,14 @@ describe('OnboardingScreen', () => {
     (useRouter as jest.Mock).mockReturnValue({ replace: mockReplace });
   });
 
-  it('renders the welcome step initially', () => {
-    const { getByText } = render(<OnboardingScreen />);
+  it('renders the welcome step initially', async () => {
+    const { getByText } = await render(<OnboardingScreen />);
     expect(getByText('Welcome to Ezconnect')).toBeTruthy();
     expect(getByText('Get Started')).toBeTruthy();
   });
 
   it('progresses through the steps and completes onboarding', async () => {
-    const { getByText, queryByText } = render(<OnboardingScreen />);
+    const { getByText, queryByText } = await render(<OnboardingScreen />);
     
     // Step 1: Welcome -> Mic
     fireEvent.press(getByText('Get Started'));
@@ -75,7 +75,7 @@ describe('OnboardingScreen', () => {
       fireEvent.press(getByText('Enter App'));
     });
 
-    expect(storage.set).toHaveBeenCalledWith('onboarding_complete', true);
+    expect(createMMKV().set).toHaveBeenCalledWith('onboarding_complete', true);
     expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
   });
 });
